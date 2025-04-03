@@ -8,6 +8,10 @@ let xIndex = ref<number | null>(null);
 let modoEditor = ref<boolean>(false);
 
 function agregarItem() {
+  if (xnombre.value === '') {
+    alert('El campo no puede estar vacío');
+    return;
+  }
   crud_array.addItem(arrX.value, xnombre.value);
   xnombre.value = '';
 }
