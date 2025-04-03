@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Array from '../views/Array.vue'
 import Objeto from '../views/Objeto.vue'
+import LocalStorage from '@/views/LocalStorage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +15,11 @@ const router = createRouter({
       path: '/objeto',
       name: 'objeto',
       component: Objeto,
+    },
+    {
+      path: '/localStorage',
+      name: 'localStorage',
+      component: LocalStorage,
     },
     // {
     //   path: '/about',

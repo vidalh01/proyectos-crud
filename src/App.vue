@@ -21,6 +21,9 @@ import { RouterLink, RouterView } from 'vue-router'
             <li class="nav-item">
               <RouterLink class="nav-link" to="/objeto">Objeto</RouterLink>
             </li>
+            <li class="nav-item">
+              <RouterLink class="nav-link" to="/localStorage">LocalStorage</RouterLink>
+            </li>
           </ul>
         </div>
       </div>

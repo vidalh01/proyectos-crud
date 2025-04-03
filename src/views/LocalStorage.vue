@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { crud_array } from '@/class/crud_array';
-import { ref } from 'vue';
+import { crud_localstorage } from '@/class/crud_localstorage';
+import { onMounted, ref } from 'vue';
 
 let arrX = ref<Item[]>([]);
 let xnombre = ref<string>('');
+let clave = 'prueva';
 let xIndex = ref<number | null>(null);
 let modoEditor = ref<boolean>(false);
 
 interface Item {
   nombre: string;
 }
+
+onMounted(() => {
+  arrX.value = crud_localstorage.getData(clave);
+});
 
 function agregarItem() {
   let item: Item = {
@@ -21,12 +26,12 @@ function agregarItem() {
     return;
   }
 
-  crud_array.addItem(arrX.value, item);
+  crud_localstorage.addDataItem(arrX.value, clave, item);
   xnombre.value = '';
 }
 
 function borrarItem(index: number) {
-  crud_array.remItem(arrX.value, index);
+  crud_localstorage.remDataItem(arrX.value, clave, index);
 };
 
 function editarItem(index: number) {
@@ -38,6 +43,7 @@ function editarItem(index: number) {
 function guardarItem() {
   if (xIndex.value !== null) {
     arrX.value[xIndex.value].nombre = xnombre.value;
+    crud_localstorage.setData(arrX.value, clave)
   }
   modoEditor.value = false;
   xIndex.value = null;
@@ -48,7 +54,7 @@ function guardarItem() {
 <template>
   <div class="d-flex justify-content-center align-items-center vh-100">
     <div>
-      <h1 class="text-center">Bienvenido a la página Objetos</h1>
+      <h1 class="text-center">Bienvenido a la página LocalStorage</h1>
       <div class="card p-5">
         <div class="mb-3">
           <label for="inputTexto" class="form-label">Ingrese un nombre</label>
