@@ -111,8 +111,6 @@ function guardarItem() {
 </script>
 
 <template>
-  <button @click="IDB.getData()" class="btn btn-success me-2">VER DATOS</button>
-
   <div class="d-flex justify-content-center align-items-center vh-100">
     <div>
       <h1 class="text-center">Bienvenido a la página IndexedDB</h1>
