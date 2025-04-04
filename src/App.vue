@@ -24,6 +24,9 @@ import { RouterLink, RouterView } from 'vue-router'
             <li class="nav-item">
               <RouterLink class="nav-link" to="/localStorage">LocalStorage</RouterLink>
             </li>
+            <li class="nav-item">
+              <RouterLink class="nav-link" to="/indexeddb">IndexedDB</RouterLink>
+            </li>
           </ul>
         </div>
       </div>
