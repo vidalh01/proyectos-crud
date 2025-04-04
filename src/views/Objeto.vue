@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { crud_array } from '@/class/crud_array';
+import { crud_array } from '../class/crud_array';
 import { ref } from 'vue';
 
 let arrX = ref<Item[]>([]);

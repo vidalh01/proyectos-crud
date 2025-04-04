@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { crud_localstorage } from '@/class/crud_localstorage';
+import { crud_localstorage } from '../class/crud_localstorage';
 import { onMounted, ref } from 'vue';
 
 let arrX = ref<Item[]>([]);

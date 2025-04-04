@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Array from '../views/Array.vue'
 import Objeto from '../views/Objeto.vue'
-import LocalStorage from '@/views/LocalStorage.vue'
-import IndexedDB from '@/views/IndexedDB.vue'
+import LocalStorage from '../views/LocalStorage.vue'
+import IndexedDB from '../views/IndexedDB.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
