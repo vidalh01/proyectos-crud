@@ -7,13 +7,15 @@ let xnombre = ref<string>('');
 let xIndex = ref<number | null>(null);
 let modoEditor = ref<boolean>(false);
 
+const IDB = new crud_indexeddb('MiBaseDeDatos', 'MiAlmacen');
+
 interface Item {
   id?: number;
   nombre: string;
 }
 
 onMounted(() => {
-  crud_indexeddb.getData('MiBaseDeDatos', 'MiAlmacen')
+  IDB.getData()
     .then((data: Item[]) => {
       arrX.value = data;
     })
@@ -23,7 +25,7 @@ onMounted(() => {
 });
 
 function actualizarDatos() {
-  crud_indexeddb.getData('MiBaseDeDatos', 'MiAlmacen')
+  IDB.getData()
     .then((data: Item[]) => {
       arrX.value = data;
     })
@@ -44,7 +46,7 @@ function agregarItem() {
   }
 
   // crud_localstorage.addDataItem(arrX.value, clave, item);
-  crud_indexeddb.addDataItem('MiBaseDeDatos', 'MiAlmacen', item)
+  IDB.addDataItem(item)
     .then(() => {
       actualizarDatos();
     })
@@ -59,7 +61,7 @@ function borrarItem(index: number) {
   let id = arrX.value[index].id;
 
   if (id !== undefined) {
-    crud_indexeddb.remDataItem('MiBaseDeDatos', 'MiAlmacen', id)
+    IDB.remDataItem(id)
       .then(() => {
         actualizarDatos();
       })
@@ -86,7 +88,7 @@ function guardarItem() {
     if (id !== undefined) {
       console.log(id, "este es el id")
 
-      crud_indexeddb.updDataItem('MiBaseDeDatos', 'MiAlmacen', {
+      IDB.updDataItem({
         nombre: xnombre.value,
         id: id
       })
@@ -109,7 +111,7 @@ function guardarItem() {
 </script>
 
 <template>
-  <button @click="crud_indexeddb.getData('MiBaseDeDatos', 'MiAlmacen')" class="btn btn-success me-2">VER DATOS</button>
+  <button @click="IDB.getData()" class="btn btn-success me-2">VER DATOS</button>
 
   <div class="d-flex justify-content-center align-items-center vh-100">
     <div>
