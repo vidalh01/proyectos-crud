@@ -15,6 +15,7 @@ interface Item {
 }
 
 onMounted(() => {
+  // crear la base de datos
   IDB.getData()
     .then((data: Item[]) => {
       arrX.value = data;
@@ -24,6 +25,7 @@ onMounted(() => {
     });
 });
 
+// actualizar los datos
 function actualizarDatos() {
   IDB.getData()
     .then((data: Item[]) => {
@@ -34,7 +36,7 @@ function actualizarDatos() {
     });
   console.log('datos actualizados');
 };
-
+// agregar Item
 function agregarItem() {
   let item: Item = {
     nombre: xnombre.value
@@ -45,7 +47,6 @@ function agregarItem() {
     return;
   }
 
-  // crud_localstorage.addDataItem(arrX.value, clave, item);
   IDB.addDataItem(item)
     .then(() => {
       actualizarDatos();
@@ -57,6 +58,7 @@ function agregarItem() {
   xnombre.value = '';
 }
 
+// borrar Item
 function borrarItem(index: number) {
   let id = arrX.value[index].id;
 
@@ -73,21 +75,18 @@ function borrarItem(index: number) {
   }
 };
 
+// editar Item
 function editarItem(index: number) {
   xnombre.value = arrX.value[index].nombre;
   xIndex.value = index;
   modoEditor.value = true;
 };
 
+// guardar Item
 function guardarItem() {
-
   if (xIndex.value !== null) {
-
     let id = arrX.value[xIndex.value].id;
-
     if (id !== undefined) {
-      console.log(id, "este es el id")
-
       IDB.updDataItem({
         nombre: xnombre.value,
         id: id
@@ -107,6 +106,7 @@ function guardarItem() {
   xIndex.value = null;
   xnombre.value = '';
 };
+
 
 </script>
 
@@ -132,7 +132,7 @@ function guardarItem() {
         </thead>
         <tbody>
           <tr v-for="(item, index) in arrX" :key="index">
-            <td>{{ item.nombre }} {{ item.id }} </td>
+            <td>{{ item.nombre }} {{ item.id }}</td>
             <td>
               <button :disabled="modoEditor" @click="editarItem(index)" class="btn btn-success me-2">E</button>
               <button :disabled="modoEditor" @click="borrarItem(index)" class="btn btn-danger">X</button>

@@ -2,6 +2,7 @@ export class crud_indexeddb {
     private dbName: string;
     private storeName: string;
 
+    // Constructor
     constructor(dbName: string, storeName: string) {
         this.dbName = dbName;
         this.storeName = storeName;
@@ -24,41 +25,40 @@ export class crud_indexeddb {
         });
     }
 
-    // Crear una transacción y un almacén de objetos basic
-    private async basic() {
+    // Crear una transacción y un almacén de objetos basico
+    private async ftStore(): Promise<IDBObjectStore> {
         const db = await this.initDB();
         const tx = db.transaction(this.storeName, "readwrite");
         const store = tx.objectStore(this.storeName);
-        return store
+        return store;
     };
 
     // agregar datos
     async addDataItem(dato: any): Promise<void> {
-        const store = await this.basic();
+        const store = await this.ftStore();
         store.add(dato);
     }
 
     // eliminar datos
     async remDataItem(id: number): Promise<void> {
-        const store = await this.basic();
+        const store = await this.ftStore();
         store.delete(id);
     }
 
     // modificar datos
     async updDataItem(xData: any): Promise<void> {
-        const store = await this.basic();
-        store.put(xData);
+        const store = await this.ftStore();
+        const itemClonado = JSON.parse(JSON.stringify(xData));
+        store.put(itemClonado);
     }
 
     // ver datos
     async getData(): Promise<any[]> {
-        const store = await this.basic();
+        const store = await this.ftStore();
         const request = store.getAll();
 
         return new Promise((resolve) => {
             request.onsuccess = () => resolve(request.result);
         });
     }
-
-
 }
