@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { crud_localstorage } from '../class/crud_localstorage';
+import { LCS } from '../class/lib_localstorage';
 import { onMounted, ref } from 'vue';
 
 let arrX = ref<Item[]>([]);
@@ -13,7 +13,7 @@ interface Item {
 }
 
 onMounted(() => {
-  arrX.value = crud_localstorage.getData(clave);
+  arrX.value = LCS.getData(clave);
 });
 
 function agregarItem() {
@@ -26,12 +26,12 @@ function agregarItem() {
     return;
   }
 
-  crud_localstorage.addDataItem(arrX.value, clave, item);
+  LCS.addDataItem(arrX.value, clave, item);
   xnombre.value = '';
 }
 
 function borrarItem(index: number) {
-  crud_localstorage.remDataItem(arrX.value, clave, index);
+  LCS.remDataItem(arrX.value, clave, index);
 };
 
 function editarItem(index: number) {
@@ -43,10 +43,14 @@ function editarItem(index: number) {
 function guardarItem() {
   if (xIndex.value !== null) {
     arrX.value[xIndex.value].nombre = xnombre.value;
-    crud_localstorage.setData(arrX.value, clave)
+    LCS.setData(arrX.value, clave)
   }
   modoEditor.value = false;
   xIndex.value = null;
+};
+
+function cancerGuardar() {
+  modoEditor.value = false;
 };
 
 </script>
@@ -61,7 +65,8 @@ function guardarItem() {
           <input v-model="xnombre" type="text" class="form-control" id="inputTexto" required>
         </div>
         <button v-if="!modoEditor" @click="agregarItem" class="btn btn-primary">Enviar</button>
-        <button v-else @click="guardarItem" class="btn btn-secondary">Guardar</button>
+        <button v-if="modoEditor" @click="guardarItem" class="btn btn-secondary">Guardar</button>
+        <button v-if="modoEditor" @click="cancerGuardar" class="btn btn-danger my-1">Cancelar</button>
       </div>
 
       <table class="table table-bordered my-3">

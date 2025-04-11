@@ -27,6 +27,12 @@ import { RouterLink, RouterView } from 'vue-router'
             <li class="nav-item">
               <RouterLink class="nav-link" to="/indexeddb">IndexedDB</RouterLink>
             </li>
+            <li class="nav-item">
+              <RouterLink class="nav-link" to="/fetch">Fetch</RouterLink>
+            </li>
+            <li class="nav-item">
+              <RouterLink class="nav-link" to="/firebase">Firebase</RouterLink>
+            </li>
           </ul>
         </div>
       </div>

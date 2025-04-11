@@ -34,6 +34,10 @@ function guardarItem() {
   xIndex.value = null;
 };
 
+function cancerGuardar() {
+  modoEditor.value = false;
+};
+
 </script>
 
 <template>
@@ -46,7 +50,8 @@ function guardarItem() {
           <input v-model="xnombre" type="text" class="form-control" id="inputTexto" required>
         </div>
         <button v-if="!modoEditor" @click="agregarItem" class="btn btn-primary">Enviar</button>
-        <button v-else @click="guardarItem" class="btn btn-secondary">Guardar</button>
+        <button v-if="modoEditor" @click="guardarItem" class="btn btn-secondary">Guardar</button>
+        <button v-if="modoEditor" @click="cancerGuardar" class="btn btn-danger my-1">Cancelar</button>
       </div>
 
       <table class="table table-bordered my-3">

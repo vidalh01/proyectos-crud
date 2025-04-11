@@ -3,6 +3,8 @@ import Array from '../views/Array.vue'
 import Objeto from '../views/Objeto.vue'
 import LocalStorage from '../views/LocalStorage.vue'
 import IndexedDB from '../views/IndexedDB.vue'
+import Fetch from '../views/Fetch.vue'
+import Firebase from '../views/Firebase.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +33,16 @@ const router = createRouter({
       path: '/indexeddb',
       name: 'indexeddb',
       component: IndexedDB,
+    },
+    {
+      path: '/fetch',
+      name: 'fetch',
+      component: Fetch,
+    },
+    {
+      path: '/firebase',
+      name: 'firebase',
+      component: Firebase,
     },
     // {
     //   path: '/about',

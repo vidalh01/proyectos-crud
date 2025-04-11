@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { crud_indexeddb } from '../class/crud_indexeddb';
+import { crud_indexeddb } from '../class/lib_indexeddb';
 
 let arrX = ref<Item[]>([]);
 let xnombre = ref<string>('');
@@ -34,7 +34,6 @@ function actualizarDatos() {
     .catch((error) => {
       console.error('Error al obtener los datos:', error);
     });
-  console.log('datos actualizados');
 };
 // agregar Item
 function agregarItem() {
@@ -107,6 +106,9 @@ function guardarItem() {
   xnombre.value = '';
 };
 
+function cancerGuardar() {
+  modoEditor.value = false;
+};
 
 </script>
 
@@ -120,7 +122,8 @@ function guardarItem() {
           <input v-model="xnombre" type="text" class="form-control" id="inputTexto" required>
         </div>
         <button v-if="!modoEditor" @click="agregarItem" class="btn btn-primary">Enviar</button>
-        <button v-else @click="guardarItem" class="btn btn-secondary">Guardar</button>
+        <button v-if="modoEditor" @click="guardarItem" class="btn btn-secondary">Guardar</button>
+        <button v-if="modoEditor" @click="cancerGuardar" class="btn btn-danger my-1">Cancelar</button>
       </div>
 
       <table class="table table-bordered my-3">
