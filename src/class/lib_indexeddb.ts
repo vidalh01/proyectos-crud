@@ -1,4 +1,4 @@
-export class crud_indexeddb {
+export class IDB {
     private dbName: string;
     private storeName: string;
 

@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc, updateDoc, doc, getDocs, deleteDoc } from "firebase/firestore";
-
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -24,6 +23,16 @@ const db = getFirestore(app);
 
 class FB {
 
+    private nameCollection: string
+
+    /**
+     * 
+     * @param nameCollection es el nombre de la coleccion
+     */
+    constructor(nameCollection: string) {
+        this.nameCollection = nameCollection
+    }
+
     /**
      * 
      * @param nameCollection nombre de la coleccion
@@ -31,14 +40,14 @@ class FB {
      * @example 
          FB.getItems(nameCollection)
         .then((res) => {
-            arrX = res;
+            xArr = res;
         })
      * @description consigue todos los datos del servidor y devuerve un arrObjs
      */
-    static async getItems(nameCollection: string): Promise<any> {
+    async getItems(): Promise<any> {
         try {
 
-            const collectionRef = collection(db, nameCollection);
+            const collectionRef = collection(db, this.nameCollection);
             const querySnapshot = await getDocs(collectionRef);
 
             let arr = querySnapshot.docs.map((item: any) => {
@@ -68,9 +77,9 @@ class FB {
         })
      * @description agregar un item
      */
-    static async addItem(nameCollection: string, xData: any) {
+    async addItem(xData: any) {
         try {
-            const collectionRef = collection(db, nameCollection);
+            const collectionRef = collection(db, this.nameCollection);
             const docRef = await addDoc(collectionRef, xData);
             console.log("documento agregado con ID: ", docRef.id, xData);
         } catch (e) {
@@ -93,9 +102,9 @@ class FB {
         })
      * @description actualizar un item
      */
-    static async updateItem(nameCollection: string, itemId: any, updatedData: any) {
+    async updateItem(itemId: any, updatedData: any) {
         try {
-            const docRef = doc(db, nameCollection, itemId);
+            const docRef = doc(db, this.nameCollection, itemId);
             await updateDoc(docRef, updatedData);
             console.log("documento actualizado con ID: ", itemId, updatedData);
         } catch (e) {
@@ -114,9 +123,9 @@ class FB {
         })
      * @description remover un item
      */
-    static async remItem(nameCollection: string, itemId: string) {
+    async remItem(itemId: string) {
         try {
-            const docRef = doc(db, nameCollection, itemId);
+            const docRef = doc(db, this.nameCollection, itemId);
             await deleteDoc(docRef);
             console.log("documento eliminado con éxito");
         } catch (error) {

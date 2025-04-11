@@ -1,10 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Array from '../views/Array.vue'
-import Objeto from '../views/Objeto.vue'
-import LocalStorage from '../views/LocalStorage.vue'
-import IndexedDB from '../views/IndexedDB.vue'
-import Fetch from '../views/Fetch.vue'
-import Firebase from '../views/Firebase.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,37 +6,37 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: IndexedDB,
+      component: () => import('../views/Firebase.vue')
     },
     {
       path: '/array',
       name: 'array',
-      component: Array,
+      component: () => import('../views/Array.vue')
     },
     {
       path: '/objeto',
       name: 'objeto',
-      component: Objeto,
+      component: () => import('../views/Objeto.vue')
     },
     {
       path: '/localStorage',
       name: 'localStorage',
-      component: LocalStorage,
+      component: () => import('../views/LocalStorage.vue')
     },
     {
       path: '/indexeddb',
       name: 'indexeddb',
-      component: IndexedDB,
+      component: () => import('../views/IndexedDB.vue')
     },
     {
       path: '/fetch',
       name: 'fetch',
-      component: Fetch,
+      component: () => import('../views/Fetch.vue')
     },
     {
       path: '/firebase',
       name: 'firebase',
-      component: Firebase,
+      component: () => import('../views/Firebase.vue')
     },
     // {
     //   path: '/about',

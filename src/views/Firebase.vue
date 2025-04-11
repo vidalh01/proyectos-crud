@@ -2,81 +2,69 @@
 import { onMounted, ref } from 'vue';
 import { FB } from '../class/lib_firebase';
 
-let arrX = ref<any[]>([]);
-let xnombre = ref<string>('');
-let userID = ref<number | null>(null);
-let modoEditor = ref<boolean>(false);
+const fb = new FB('items');
 
-const nameCollection: string = "items"
+let xArr = ref<any[]>([]);
+let xNombre = ref<string>('');
+let userID = ref<number | null>(null);
+let modeEdit = ref<boolean>(false);
+
 
 let url = 'http://localhost:3000/usuarios'
 
 onMounted(() => {
     // crear la base de datos
-    FB.getItems(nameCollection)
-        .then((res) => {
-            arrX.value = res;
-        })
+    fb.getItems().then(res => xArr.value = res)
+
 });
 
 // actualizar los datos
 function actualizarDatos() {
-    FB.getItems(nameCollection)
-        .then((res) => {
-            arrX.value = res;
-        })
+    fb.getItems().then(res => xArr.value = res)
 
 };
 // agregar Item 
 function agregarItem() {
     let item = {
-        nombre: xnombre.value
+        nombre: xNombre.value
     };
 
-    if (xnombre.value === '') {
+    if (xNombre.value === '') {
         alert('El campo no puede estar vacío');
         return;
     }
 
-    FB.addItem(nameCollection, item)
-        .then(() => {
-            actualizarDatos();
-        })
+    fb.addItem(item).then(() => actualizarDatos())
 
-    xnombre.value = '';
+    xNombre.value = '';
 }
 
 // borrar Item
 function borrarItem(userID: string) {
-    FB.remItem(nameCollection, userID)
-        .then(() => {
-            actualizarDatos();
-        })
+    fb.remItem(userID).then(() => actualizarDatos())
 };
 
 // editar Item
 function editarItem(item: any) {
-    xnombre.value = item.data.nombre
+    xNombre.value = item.data.nombre
     userID.value = item.id;
-    modoEditor.value = true;
+    modeEdit.value = true;
 };
 
 // guardar Item
 function guardarItem() {
-    FB.updateItem(nameCollection, userID.value, {
-        nombre: xnombre.value
-    })
-        .then(() => {
-            actualizarDatos();
-        })
+    fb.updateItem(userID.value, {
+        nombre: xNombre.value
+    }).then(() => actualizarDatos())
 
-    modoEditor.value = false;
+    modeEdit.value = false;
     userID.value = null;
-    xnombre.value = '';
+    xNombre.value = '';
 };
 
 function cancerGuardar() {
-    modoEditor.value = false;
+    modeEdit.value = false;
+    xNombre.value = ""
 };
 
 </script>
@@ -88,11 +76,14 @@ function cancerGuardar() {
             <div class="card p-5">
                 <div class="mb-3">
                     <label for="inputTexto" class="form-label">Ingrese un nombre</label>
-                    <input v-model="xnombre" type="text" class="form-control" id="inputTexto" required>
+                    <input v-model="xNombre" type="text" class="form-control" id="inputTexto">
                 </div>
-                <button v-if="!modoEditor" @click="agregarItem" class="btn btn-primary">Enviar</button>
-                <button v-if="modoEditor" @click="guardarItem" class="btn btn-secondary">Guardar</button>
-                <button v-if="modoEditor" @click="cancerGuardar" class="btn btn-danger my-1">Cancelar</button>
+                <button @click="modeEdit ? guardarItem() : agregarItem()" class="btn"
+                    :class="modeEdit ? 'btn-secondary' : 'btn-primary'">
+                    {{ modeEdit ? 'Guardar' : 'Enviar' }}
+                </button>
+                <button v-if="modeEdit" @click="cancerGuardar" class="btn btn-danger my-1">Cancelar</button>
+
             </div>
 
             <table class="table table-bordered my-3">
@@ -103,13 +94,12 @@ function cancerGuardar() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(item, index) in arrX" :key="index">
+                    <tr v-for="(item, index) in xArr" :key="index">
                         <td>{{ item.data.nombre }}</td>
                         <td>
-                            <button :disabled="modoEditor" @click="editarItem(item)"
+                            <button :disabled="modeEdit" @click="editarItem(item)"
                                 class="btn btn-success me-2">E</button>
-                            <button :disabled="modoEditor" @click="borrarItem(item.id)"
-                                class="btn btn-danger">X</button>
+                            <button :disabled="modeEdit" @click="borrarItem(item.id)" class="btn btn-danger">X</button>
                         </td>
                     </tr>
                 </tbody>

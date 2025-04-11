@@ -2,10 +2,10 @@
 import { crud_array } from '../class/crud_array';
 import { ref } from 'vue';
 
-let arrX = ref<Item[]>([]);
-let xnombre = ref<string>('');
+let xArr = ref<Item[]>([]);
+let xNombre = ref<string>('');
 let xIndex = ref<number | null>(null);
-let modoEditor = ref<boolean>(false);
+let modeEdit = ref<boolean>(false);
 
 interface Item {
   nombre: string;
@@ -13,38 +13,39 @@ interface Item {
 
 function agregarItem() {
   let item: Item = {
-    nombre: xnombre.value
+    nombre: xNombre.value
   };
 
-  if (xnombre.value === '') {
+  if (xNombre.value === '') {
     alert('El campo no puede estar vacío');
     return;
   }
 
-  crud_array.addItem(arrX.value, item);
-  xnombre.value = '';
+  crud_array.addItem(xArr.value, item);
+  xNombre.value = '';
 }
 
 function borrarItem(index: number) {
-  crud_array.remItem(arrX.value, index);
+  crud_array.remItem(xArr.value, index);
 };
 
 function editarItem(index: number) {
-  xnombre.value = arrX.value[index].nombre;
+  xNombre.value = xArr.value[index].nombre;
   xIndex.value = index;
-  modoEditor.value = true;
+  modeEdit.value = true;
 };
 
 function guardarItem() {
   if (xIndex.value !== null) {
-    arrX.value[xIndex.value].nombre = xnombre.value;
+    xArr.value[xIndex.value].nombre = xNombre.value;
   }
-  modoEditor.value = false;
+  modeEdit.value = false;
   xIndex.value = null;
 };
 
 function cancerGuardar() {
-  modoEditor.value = false;
+  modeEdit.value = false;
+  xNombre.value = ""
 };
 
 </script>
@@ -56,11 +57,13 @@ function cancerGuardar() {
       <div class="card p-5">
         <div class="mb-3">
           <label for="inputTexto" class="form-label">Ingrese un nombre</label>
-          <input v-model="xnombre" type="text" class="form-control" id="inputTexto" required>
+          <input v-model="xNombre" type="text" class="form-control" id="inputTexto">
         </div>
-        <button v-if="!modoEditor" @click="agregarItem" class="btn btn-primary">Enviar</button>
-        <button v-if="modoEditor" @click="guardarItem" class="btn btn-secondary">Guardar</button>
-        <button v-if="modoEditor" @click="cancerGuardar" class="btn btn-danger my-1">Cancelar</button>
+        <button @click="modeEdit ? guardarItem() : agregarItem()" class="btn"
+          :class="modeEdit ? 'btn-secondary' : 'btn-primary'">
+          {{ modeEdit ? 'Guardar' : 'Enviar' }}
+        </button>
+        <button v-if="modeEdit" @click="cancerGuardar" class="btn btn-danger my-1">Cancelar</button>
       </div>
 
       <table class="table table-bordered my-3">
@@ -71,11 +74,11 @@ function cancerGuardar() {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in arrX" :key="index">
+          <tr v-for="(item, index) in xArr" :key="index">
             <td>{{ item.nombre }}</td>
             <td>
-              <button :disabled="modoEditor" @click="editarItem(index)" class="btn btn-success me-2">E</button>
-              <button :disabled="modoEditor" @click="borrarItem(index)" class="btn btn-danger">X</button>
+              <button :disabled="modeEdit" @click="editarItem(index)" class="btn btn-success me-2">E</button>
+              <button :disabled="modeEdit" @click="borrarItem(index)" class="btn btn-danger">X</button>
             </td>
           </tr>
         </tbody>
