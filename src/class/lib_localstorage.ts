@@ -4,11 +4,21 @@ export class LCS {
    * @param key es la clave del localStorage
    * @description Guarda un array en el localStorage
    * @description Si el array ya existe, lo actualiza
-   * @param arr es el array a guardar
+   * @param xvar cualquier variable
    * @description Convierte el array en un string y lo guarda en el localStorage
    */
-  static setData(arr: any, key: string): void {
-    localStorage.setItem(key, JSON.stringify(arr));
+  static setData(xvar: any, key: string): void {
+    localStorage.setItem(key, JSON.stringify(xvar));
+  }
+
+  /**
+ * 
+ * @param key es la clave del localStorage
+ * @description Elimina por completo el localStorage de la clave
+ * @description Elimina el localStorage de la clave
+ */
+  static delData(key: string): void {
+    localStorage.removeItem(key);
   }
 
   /**
@@ -87,14 +97,4 @@ export class LCS {
     this.setData(arr, key);
 
   };
-
-  /**
-   * 
-   * @param key es la clave del localStorage
-   * @description Elimina por completo el localStorage de la clave
-   * @description Elimina el localStorage de la clave
-   */
-  static delData(key: string): void {
-    localStorage.removeItem(key);
-  }
 }

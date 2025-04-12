@@ -38,6 +38,16 @@ const router = createRouter({
       name: 'firebase',
       component: () => import('../views/Firebase.vue')
     },
+    {
+      path: '/set',
+      name: 'set',
+      component: () => import('../views/Set.vue')
+    },
+    {
+      path: '/map',
+      name: 'map',
+      component: () => import('../views/Map.vue')
+    },
     // {
     //   path: '/about',
     //   name: 'about',

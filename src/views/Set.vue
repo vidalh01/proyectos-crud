@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { Arr } from '../class/crud_array';
 import { ref } from 'vue';
 
-let xArr = ref<string[]>([]);
+const xArr = ref<Set<string>>(new Set())
 let xNombre = ref<string>('');
-let xIndex = ref<number | null>(null);
+let xItem = ref<any>();
 let modeEdit = ref<boolean>(false);
 
 function agregarItem() {
@@ -12,25 +11,27 @@ function agregarItem() {
     alert('El campo no puede estar vacío');
     return;
   }
-  Arr.addItem(xArr.value, xNombre.value);
+
+  xArr.value.add(xNombre.value)
   xNombre.value = '';
 }
 
-function borrarItem(index: number) {
-  Arr.remItem(xArr.value, index);
+function borrarItem(item: any) {
+  xArr.value.delete(item);
 };
 
-function editarItem(index: number) {
-  xNombre.value = xArr.value[index];
-  xIndex.value = index;
+function editarItem(item: any) {
+  xNombre.value = item;
+  xItem.value = item;
   modeEdit.value = true;
 };
 
 function guardarItem() {
-  if (xIndex.value !== null) xArr.value[xIndex.value] = xNombre.value;
+  xArr.value.delete(xItem.value);
+  xArr.value.add(xNombre.value)
 
   modeEdit.value = false;
-  xIndex.value = null;
+  xNombre.value = '';
 };
 
 function cancerGuardar() {
@@ -43,7 +44,7 @@ function cancerGuardar() {
 <template>
   <div class="d-flex justify-content-center align-items-center vh-100">
     <div>
-      <h1 class="text-center">Bienvenido a la página Array</h1>
+      <h1 class="text-center">Bienvenido a la página Set</h1>
       <div class="card p-5">
         <div class="mb-3">
           <label for="inputTexto" class="form-label">Ingrese un nombre</label>
@@ -67,8 +68,8 @@ function cancerGuardar() {
           <tr v-for="(item, index) in xArr" :key="index">
             <td>{{ item }}</td>
             <td>
-              <button :disabled="modeEdit" @click="editarItem(index)" class="btn btn-success me-2">E</button>
-              <button :disabled="modeEdit" @click="borrarItem(index)" class="btn btn-danger">X</button>
+              <button :disabled="modeEdit" @click="editarItem(item)" class="btn btn-success me-2">E</button>
+              <button :disabled="modeEdit" @click="borrarItem(item)" class="btn btn-danger">X</button>
             </td>
           </tr>
         </tbody>

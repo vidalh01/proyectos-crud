@@ -1,6 +1,7 @@
-export class crud_array {
+export class Arr {
+
     constructor() {
-        
+
     }
 
     static addItem(array: any[], item: any) {

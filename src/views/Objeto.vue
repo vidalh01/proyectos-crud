@@ -1,19 +1,23 @@
 <script setup lang="ts">
-import { crud_array } from '../class/crud_array';
+import { Arr } from '../class/crud_array';
 import { ref } from 'vue';
-
-let xArr = ref<Item[]>([]);
-let xNombre = ref<string>('');
-let xIndex = ref<number | null>(null);
-let modeEdit = ref<boolean>(false);
 
 interface Item {
   nombre: string;
+  id: string
 }
 
+let xArr = ref<Item[]>([]);
+let xNombre = ref<string>('');
+let xItem = ref<Item>({ nombre: '', id: '' });
+let modeEdit = ref<boolean>(false);
+
 function agregarItem() {
+  const id = Math.random().toString(36).substring(2, 6);
+
   let item: Item = {
-    nombre: xNombre.value
+    nombre: xNombre.value,
+    id: id
   };
 
   if (xNombre.value === '') {
@@ -21,31 +25,32 @@ function agregarItem() {
     return;
   }
 
-  crud_array.addItem(xArr.value, item);
+  Arr.addItem(xArr.value, item);
   xNombre.value = '';
 }
 
 function borrarItem(index: number) {
-  crud_array.remItem(xArr.value, index);
+  Arr.remItem(xArr.value, index);
 };
 
-function editarItem(index: number) {
-  xNombre.value = xArr.value[index].nombre;
-  xIndex.value = index;
+function editarItem(item: Item) {
+
+  xNombre.value = item.nombre;
+  xItem.value = item;
+
   modeEdit.value = true;
+
 };
 
 function guardarItem() {
-  if (xIndex.value !== null) {
-    xArr.value[xIndex.value].nombre = xNombre.value;
-  }
+  xItem.value.nombre = xNombre.value;
+
   modeEdit.value = false;
-  xIndex.value = null;
 };
 
 function cancerGuardar() {
   modeEdit.value = false;
-  xNombre.value = ""
+  xNombre.value = "";
 };
 
 </script>
@@ -75,9 +80,9 @@ function cancerGuardar() {
         </thead>
         <tbody>
           <tr v-for="(item, index) in xArr" :key="index">
-            <td>{{ item.nombre }}</td>
+            <td>{{ item.nombre }} {{ item.id }} </td>
             <td>
-              <button :disabled="modeEdit" @click="editarItem(index)" class="btn btn-success me-2">E</button>
+              <button :disabled="modeEdit" @click="editarItem(item)" class="btn btn-success me-2">E</button>
               <button :disabled="modeEdit" @click="borrarItem(index)" class="btn btn-danger">X</button>
             </td>
           </tr>

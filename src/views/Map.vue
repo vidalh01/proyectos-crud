@@ -1,36 +1,56 @@
 <script setup lang="ts">
-import { Arr } from '../class/crud_array';
 import { ref } from 'vue';
 
-let xArr = ref<string[]>([]);
+interface Item {
+  nombre: string;
+  id: string
+}
+
+let xArr = ref<Map<string, Item>>(new Map());
 let xNombre = ref<string>('');
-let xIndex = ref<number | null>(null);
+let xID = ref<string>("");
 let modeEdit = ref<boolean>(false);
 
 function agregarItem() {
+  const id = Math.random().toString(36).substring(2, 6);
+
+  let item: Item = {
+    nombre: xNombre.value,
+    id: id
+  };
+
   if (xNombre.value === '') {
     alert('El campo no puede estar vacío');
     return;
   }
-  Arr.addItem(xArr.value, xNombre.value);
+
+  xArr.value.set(item.id, item);
   xNombre.value = '';
 }
 
-function borrarItem(index: number) {
-  Arr.remItem(xArr.value, index);
+function borrarItem(item: Item) {
+  xArr.value.delete(item.id);
 };
 
-function editarItem(index: number) {
-  xNombre.value = xArr.value[index];
-  xIndex.value = index;
+function editarItem(item: Item) {
+  xNombre.value = item.nombre;
+  xID.value = item.id;
+
   modeEdit.value = true;
+
 };
 
 function guardarItem() {
-  if (xIndex.value !== null) xArr.value[xIndex.value] = xNombre.value;
+
+  let item: Item = {
+    nombre: xNombre.value,
+    id: xID.value
+  };
+
+  xArr.value.set(xID.value, item)
 
   modeEdit.value = false;
-  xIndex.value = null;
+  xNombre.value = "";
 };
 
 function cancerGuardar() {
@@ -43,7 +63,7 @@ function cancerGuardar() {
 <template>
   <div class="d-flex justify-content-center align-items-center vh-100">
     <div>
-      <h1 class="text-center">Bienvenido a la página Array</h1>
+      <h1 class="text-center">Bienvenido a la página Map</h1>
       <div class="card p-5">
         <div class="mb-3">
           <label for="inputTexto" class="form-label">Ingrese un nombre</label>
@@ -64,11 +84,11 @@ function cancerGuardar() {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in xArr" :key="index">
-            <td>{{ item }}</td>
+          <tr v-for="[key, item] in xArr" :key="key">
+            <td>{{ item.nombre }} </td>
             <td>
-              <button :disabled="modeEdit" @click="editarItem(index)" class="btn btn-success me-2">E</button>
-              <button :disabled="modeEdit" @click="borrarItem(index)" class="btn btn-danger">X</button>
+              <button :disabled="modeEdit" @click="editarItem(item)" class="btn btn-success me-2">E</button>
+              <button :disabled="modeEdit" @click="borrarItem(item)" class="btn btn-danger">X</button>
             </td>
           </tr>
         </tbody>

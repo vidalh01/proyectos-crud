@@ -1,5 +1,16 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+
+let arrLista = [
+  "/objeto",
+  "/localStorage",
+  "/indexeddb",
+  "/fetch",
+  "/firebase",
+  "/set",
+  "/map"
+]
+
 </script>
 
 <template>
@@ -13,25 +24,9 @@ import { RouterLink, RouterView } from 'vue-router'
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <RouterLink class="nav-link active" aria-current="page" to="/array">Array</RouterLink>
-            </li>
-            <li class="nav-item">
-            </li>
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/objeto">Objeto</RouterLink>
-            </li>
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/localStorage">LocalStorage</RouterLink>
-            </li>
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/indexeddb">IndexedDB</RouterLink>
-            </li>
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/fetch">Fetch</RouterLink>
-            </li>
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/firebase">Firebase</RouterLink>
+            <li v-for="(item, index) in arrLista" :key="index" class="nav-item">
+              <RouterLink class="nav-link active" aria-current="page" :to="item">{{
+                item.slice(1).charAt(0).toUpperCase() + item.slice(2) }}</RouterLink>
             </li>
           </ul>
         </div>
