@@ -39,7 +39,6 @@ function guardarItem(data: any) {
 
 function cancerGuardar() {
   modeEdit.value = false;
-  xNombre.value = "";
 };
 
 </script>
@@ -47,6 +46,6 @@ function cancerGuardar() {
 <template>
 
   <mainComp :title="title" @editarItem="editarItem" @agregar-item="agregarItem" @guardar-item="guardarItem"
-    :mode-edit="modeEdit" :x-arr="xArr" :borrar-item="borrarItem" :cancer-guardar="cancerGuardar" />
+    :mode-edit="modeEdit" :x-arr="xArr" :borrar-item="borrarItem" @cancer-edit="cancerGuardar" />
 
 </template>

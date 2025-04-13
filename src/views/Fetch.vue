@@ -6,7 +6,6 @@ import MainComp from '../components/mainComp.vue';
 let title = 'Fetch'
 
 let xArr = ref<any[]>([]);
-let xNombre = ref<string>('');
 let xIndex = ref<number | null>(null);
 let modeEdit = ref<boolean>(false);
 
@@ -66,13 +65,13 @@ function editarItem(item: any, index: number) {
 };
 
 // guardar Item
-async function guardarItem() {
+async function guardarItem(data: string) {
     if (xIndex.value !== null) {
         let id = xArr.value[xIndex.value].id;
         if (id !== undefined) {
             await FTH.patch(`${url}/${id}`, {
                 data: {
-                    nombre: xNombre.value
+                    nombre: data
                 }
             })
                 .then(() => {
@@ -85,17 +84,15 @@ async function guardarItem() {
 
     modeEdit.value = false;
     xIndex.value = null;
-    xNombre.value = '';
 };
 
 function cancerGuardar() {
     modeEdit.value = false;
-    xNombre.value = ""
 };
 
 </script>
 
 <template>
     <MainComp :title="title" @editarItem="editarItem" @agregar-item="agregarItem" @guardar-item="guardarItem"
-        :mode-edit="modeEdit" :x-arr="xArr" :borrar-item="borrarItem" :cancer-guardar="cancerGuardar" />
+        :mode-edit="modeEdit" :x-arr="xArr" :borrar-item="borrarItem" @cancer-edit="cancerGuardar" />
 </template>

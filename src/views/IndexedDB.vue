@@ -6,7 +6,6 @@ import MainComp from '../components/mainComp.vue';
 let title = "IndexedDB"
 
 let xArr = ref<Item[]>([]);
-let xNombre = ref<string>('');
 let xItem = ref<Item>({ nombre: '', id: -1 });
 let modeEdit = ref<boolean>(false);
 
@@ -80,7 +79,6 @@ function borrarItem(item: any, index: number) {
 
 // editar Item
 function editarItem(item: any, index: number) {
-  xNombre.value = xArr.value[index].nombre;
   xItem.value = item;
   modeEdit.value = true;
 };
@@ -115,6 +113,6 @@ function cancerGuardar() {
 <template>
 
   <MainComp :title="title" @editarItem="editarItem" @agregar-item="agregarItem" @guardar-item="guardarItem"
-    :mode-edit="modeEdit" :x-arr="xArr" :borrar-item="borrarItem" :cancer-guardar="cancerGuardar" />
+    :mode-edit="modeEdit" :x-arr="xArr" :borrar-item="borrarItem" @cancer-edit="cancerGuardar" />
 
 </template>

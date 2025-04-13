@@ -3,7 +3,6 @@ import MainComp from '../components/mainComp.vue';
 import { ref } from 'vue';
 
 const xArr = ref<Set<string>>(new Set())
-let xNombre = ref<string>('');
 let xItem = ref<any>();
 let modeEdit = ref<boolean>(false);
 
@@ -25,9 +24,9 @@ function editarItem(item: any, index: number) {
   modeEdit.value = true;
 };
 
-function guardarItem() {
+function guardarItem(data: string) {
   xArr.value.delete(xItem.value);
-  xArr.value.add(xNombre.value)
+  xArr.value.add(data)
 
   modeEdit.value = false;
 };
@@ -40,7 +39,8 @@ function cancerGuardar(data: string) {
 
 <template>
   <MainComp title="Set" @editarItem="editarItem" @agregar-item="agregarItem" @guardar-item="guardarItem"
-    :mode-edit="modeEdit" :x-arr="xArr" :borrar-item="borrarItem" :cancer-guardar="cancerGuardar" />
+    @cancer-edit="cancerGuardar" :mode-edit="modeEdit" :x-arr="xArr" :borrar-item="borrarItem"
+    :cancer-guardar="cancerGuardar" />
 
 
 </template>

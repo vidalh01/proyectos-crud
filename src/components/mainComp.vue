@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-const props = defineProps(['title', 'modeEdit', 'xArr', 'cancerGuardar', 'borrarItem'])
+const props = defineProps(['title', 'modeEdit', 'xArr', 'borrarItem'])
 
-const emit = defineEmits(["editarItem", "agregarItem", "guardarItem"])
+const emit = defineEmits(["editarItem", "agregarItem", "guardarItem", "cancerEdit"])
 
 let xNombre = ref("")
 
 function editarItem(item: any, index: number) {
     xNombre.value = typeof item === 'string' ? item : item?.nombre ?? item.data.nombre
-    console.log(xNombre.value)
     emit('editarItem', item, index)
 };
 
@@ -20,6 +19,11 @@ function agregarItem() {
 
 function guardarItem() {
     emit('guardarItem', xNombre.value)
+    xNombre.value = ""
+};
+
+function cancerGuardar() {
+    emit('cancerEdit')
     xNombre.value = ""
 };
 
