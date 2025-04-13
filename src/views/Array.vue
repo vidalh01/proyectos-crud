@@ -1,36 +1,40 @@
 <script setup lang="ts">
 import { Arr } from '../class/crud_array';
 import { ref } from 'vue';
+import mainComp from "../components/mainComp.vue";
+
+let title = "Array"
 
 let xArr = ref<string[]>([]);
 let xNombre = ref<string>('');
 let xIndex = ref<number | null>(null);
 let modeEdit = ref<boolean>(false);
 
-function agregarItem() {
-  if (xNombre.value === '') {
+function agregarItem(data: any) {
+  // el data viene del hijo: mainComp
+  if (data === '') {
     alert('El campo no puede estar vacío');
     return;
   }
-  Arr.addItem(xArr.value, xNombre.value);
-  xNombre.value = '';
+  Arr.addItem(xArr.value, data);
 }
 
-function borrarItem(index: number) {
+function borrarItem(item: any, index: number) {
+  // el id viene del hijo: mainComp
   Arr.remItem(xArr.value, index);
 };
 
-function editarItem(index: number) {
-  xNombre.value = xArr.value[index];
-  xIndex.value = index;
+function editarItem(item: any, index: number) {
+  // el item viene del hijo: mainComp
+  xNombre.value = xArr.value[index]
+  xIndex.value = index
   modeEdit.value = true;
 };
 
-function guardarItem() {
-  if (xIndex.value !== null) xArr.value[xIndex.value] = xNombre.value;
-
+function guardarItem(data: any) {
+  // el data viene del hijo: mainComp
+  if (xIndex.value !== null) xArr.value[xIndex.value] = data;
   modeEdit.value = false;
-  xIndex.value = null;
 };
 
 function cancerGuardar() {
@@ -41,38 +45,8 @@ function cancerGuardar() {
 </script>
 
 <template>
-  <div class="d-flex justify-content-center align-items-center vh-100">
-    <div>
-      <h1 class="text-center">Bienvenido a la página Array</h1>
-      <div class="card p-5">
-        <div class="mb-3">
-          <label for="inputTexto" class="form-label">Ingrese un nombre</label>
-          <input v-model="xNombre" type="text" class="form-control" id="inputTexto">
-        </div>
-        <button @click="modeEdit ? guardarItem() : agregarItem()" class="btn"
-          :class="modeEdit ? 'btn-secondary' : 'btn-primary'">
-          {{ modeEdit ? 'Guardar' : 'Enviar' }}
-        </button>
-        <button v-if="modeEdit" @click="cancerGuardar" class="btn btn-danger my-1">Cancelar</button>
-      </div>
 
-      <table class="table table-bordered my-3">
-        <thead>
-          <tr>
-            <th scope="col">Nombre</th>
-            <th scope="col">Funciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in xArr" :key="index">
-            <td>{{ item }}</td>
-            <td>
-              <button :disabled="modeEdit" @click="editarItem(index)" class="btn btn-success me-2">E</button>
-              <button :disabled="modeEdit" @click="borrarItem(index)" class="btn btn-danger">X</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <mainComp :title="title" @editarItem="editarItem" @agregar-item="agregarItem" @guardar-item="guardarItem"
+    :mode-edit="modeEdit" :x-arr="xArr" :borrar-item="borrarItem" :cancer-guardar="cancerGuardar" />
+
 </template>

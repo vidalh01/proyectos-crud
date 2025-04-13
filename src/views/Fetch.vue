@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { FTH } from '../class/lib_fetch';
+import MainComp from '../components/mainComp.vue';
+
+let title = 'Fetch'
 
 let xArr = ref<any[]>([]);
 let xNombre = ref<string>('');
@@ -9,7 +12,7 @@ let modeEdit = ref<boolean>(false);
 
 let url = 'http://localhost:3000/usuarios'
 
-onMounted(() => {
+onMounted(async () => {
     // crear la base de datos
     FTH.get(url)
         .then((res) => {
@@ -19,60 +22,55 @@ onMounted(() => {
 });
 
 // actualizar los datos
-function actualizarDatos() {
-    FTH.get(url)
+async function actualizarDatos() {
+    await FTH.get(url)
         .then((res) => {
             xArr.value = res;
         })
 };
 // agregar Item 
-function agregarItem() {
+async function agregarItem(data: string) {
     let item = {
         data: {
-            nombre: xNombre.value
+            nombre: data
         }
     };
 
-    if (xNombre.value === '') {
+    if (data === '') {
         alert('El campo no puede estar vacío');
         return;
     }
 
-    FTH.post(url, item)
+    await FTH.post(url, item)
         .then(() => {
             actualizarDatos();
         })
 
-    xNombre.value = '';
 }
 
 // borrar Item
-function borrarItem(index: number) {
-    let id = xArr.value[index].id;
+async function borrarItem(item: any, index: number) {
+    let id = item.id;
 
-    if (id !== undefined) {
-        FTH.del(`${url}/${id}`)
-            .then(() => {
-                actualizarDatos();
-            })
-    } else {
-        console.error('Error: El ID del item es undefined');
-    }
+    await FTH.del(`${url}/${id}`)
+        .then(() => {
+            actualizarDatos();
+        })
+
 };
 
 // editar Item
-function editarItem(index: number) {
-    xNombre.value = xArr.value[index].data.nombre;
+function editarItem(item: any, index: number) {
     xIndex.value = index;
     modeEdit.value = true;
 };
 
 // guardar Item
-function guardarItem() {
+async function guardarItem() {
     if (xIndex.value !== null) {
         let id = xArr.value[xIndex.value].id;
         if (id !== undefined) {
-            FTH.patch(`${url}/${id}`, {
+            await FTH.patch(`${url}/${id}`, {
                 data: {
                     nombre: xNombre.value
                 }
@@ -98,37 +96,6 @@ function cancerGuardar() {
 </script>
 
 <template>
-    <div class="d-flex justify-content-center align-items-center vh-100">
-        <div>
-            <h1 class="text-center">Bienvenido a la página Fetch</h1>
-            <div class="card p-5">
-                <div class="mb-3">
-                    <label for="inputTexto" class="form-label">Ingrese un nombre</label>
-                    <input v-model="xNombre" type="text" class="form-control" id="inputTexto">
-                </div>
-                <button v-if="!modeEdit" @click="agregarItem" class="btn btn-primary">Enviar</button>
-                <button v-if="modeEdit" @click="guardarItem" class="btn btn-secondary">Guardar</button>
-                <button v-if="modeEdit" @click="cancerGuardar" class="btn btn-danger my-1">Cancelar</button>
-            </div>
-
-            <table class="table table-bordered my-3">
-                <thead>
-                    <tr>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Funciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(item, index) in xArr" :key="index">
-                        <td>{{ item.data.nombre }} {{ item.id }}</td>
-                        <td>
-                            <button :disabled="modeEdit" @click="editarItem(index)"
-                                class="btn btn-success me-2">E</button>
-                            <button :disabled="modeEdit" @click="borrarItem(index)" class="btn btn-danger">X</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <MainComp :title="title" @editarItem="editarItem" @agregar-item="agregarItem" @guardar-item="guardarItem"
+        :mode-edit="modeEdit" :x-arr="xArr" :borrar-item="borrarItem" :cancer-guardar="cancerGuardar" />
 </template>

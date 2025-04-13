@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { IDB } from '../class/lib_indexeddb';
+import MainComp from '../components/mainComp.vue';
+
+let title = "IndexedDB"
 
 let xArr = ref<Item[]>([]);
 let xNombre = ref<string>('');
-let xIndex = ref<number | null>(null);
+let xItem = ref<Item>({ nombre: '', id: -1 });
 let modeEdit = ref<boolean>(false);
 
 const idb = new IDB('MiBaseDeDatos', 'MiAlmacen');
@@ -17,7 +20,7 @@ interface Item {
 onMounted(() => {
   // crear la base de datos
   idb.getData()
-    .then((data: Item[]) => {
+    .then((data) => {
       xArr.value = data;
     })
     .catch((error) => {
@@ -26,9 +29,9 @@ onMounted(() => {
 });
 
 // actualizar los datos
-function actualizarDatos() {
+function getDataItems() {
   idb.getData()
-    .then((data: Item[]) => {
+    .then((data) => {
       xArr.value = data;
     })
     .catch((error) => {
@@ -36,35 +39,36 @@ function actualizarDatos() {
     });
 };
 // agregar Item
-function agregarItem() {
+function agregarItem(data: string) {
+  console.log(data)
+
   let item: Item = {
-    nombre: xNombre.value
+    nombre: data
   };
 
-  if (xNombre.value === '') {
+  if (data === '') {
     alert('El campo no puede estar vacío');
     return;
   }
 
   idb.addDataItem(item)
     .then(() => {
-      actualizarDatos();
+      getDataItems();
     })
     .catch((error) => {
       console.error('Error al agregar el item:', error);
     });
 
-  xNombre.value = '';
 }
 
 // borrar Item
-function borrarItem(index: number) {
+function borrarItem(item: any, index: number) {
   let id = xArr.value[index].id;
 
   if (id !== undefined) {
     idb.remDataItem(id)
       .then(() => {
-        actualizarDatos();
+        getDataItems();
       })
       .catch((error) => {
         console.error('Error al eliminar el item:', error);
@@ -75,77 +79,42 @@ function borrarItem(index: number) {
 };
 
 // editar Item
-function editarItem(index: number) {
+function editarItem(item: any, index: number) {
   xNombre.value = xArr.value[index].nombre;
-  xIndex.value = index;
+  xItem.value = item;
   modeEdit.value = true;
 };
 
 // guardar Item
-function guardarItem() {
-  if (xIndex.value !== null) {
-    let id = xArr.value[xIndex.value].id;
-    if (id !== undefined) {
-      idb.updDataItem({
-        nombre: xNombre.value,
-        id: id
-      })
-        .then(() => {
-          actualizarDatos();
-        })
-        .catch((error) => {
-          console.error('Error al editar el item:', error);
-        });
-    } else {
-      console.error('Error: El ID del item es undefined');
-    }
-  }
+function guardarItem(data: string) {
+
+  let id = xItem.value.id;
+
+  idb.updDataItem({
+    nombre: data,
+    id: id
+  })
+    .then(() => {
+      getDataItems();
+    })
+    .catch((error) => {
+      console.error('Error al editar el item:', error);
+    });
 
   modeEdit.value = false;
-  xIndex.value = null;
-  xNombre.value = '';
 };
 
 function cancerGuardar() {
   modeEdit.value = false;
-  xNombre.value = ""
 };
 
 </script>
 
-<template>
-  <div class="d-flex justify-content-center align-items-center vh-100">
-    <div>
-      <h1 class="text-center">Bienvenido a la página IndexedDB</h1>
-      <div class="card p-5">
-        <div class="mb-3">
-          <label for="inputTexto" class="form-label">Ingrese un nombre</label>
-          <input v-model="xNombre" type="text" class="form-control" id="inputTexto">
-        </div>
-        <button @click="modeEdit ? guardarItem() : agregarItem()" class="btn"
-          :class="modeEdit ? 'btn-secondary' : 'btn-primary'">
-          {{ modeEdit ? 'Guardar' : 'Enviar' }}
-        </button>
-        <button v-if="modeEdit" @click="cancerGuardar" class="btn btn-danger my-1">Cancelar</button>
-      </div>
 
-      <table class="table table-bordered my-3">
-        <thead>
-          <tr>
-            <th scope="col">Nombre</th>
-            <th scope="col">Funciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in xArr" :key="index">
-            <td>{{ item.nombre }} {{ item.id }}</td>
-            <td>
-              <button :disabled="modeEdit" @click="editarItem(index)" class="btn btn-success me-2">E</button>
-              <button :disabled="modeEdit" @click="borrarItem(index)" class="btn btn-danger">X</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+
+<template>
+
+  <MainComp :title="title" @editarItem="editarItem" @agregar-item="agregarItem" @guardar-item="guardarItem"
+    :mode-edit="modeEdit" :x-arr="xArr" :borrar-item="borrarItem" :cancer-guardar="cancerGuardar" />
+
 </template>

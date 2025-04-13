@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { FB } from '../class/lib_firebase';
+import MainComp from '../components/mainComp.vue';
+
+let title = "Firebase"
 
 const fb = new FB('items');
 
@@ -12,9 +15,9 @@ let modeEdit = ref<boolean>(false);
 
 let url = 'http://localhost:3000/usuarios'
 
-onMounted(() => {
+onMounted(async () => {
     // crear la base de datos
-    fb.getItems().then(res => xArr.value = res)
+    await fb.getItems().then(res => xArr.value = res)
 
 });
 
@@ -23,87 +26,50 @@ function actualizarDatos() {
     fb.getItems().then(res => xArr.value = res)
 
 };
+
 // agregar Item 
-function agregarItem() {
+async function agregarItem(data: string) {
     let item = {
-        nombre: xNombre.value
+        nombre: data
     };
 
-    if (xNombre.value === '') {
+    if (data === '') {
         alert('El campo no puede estar vacío');
         return;
     }
 
-    fb.addItem(item).then(() => actualizarDatos())
+    await fb.addItem(item).then(() => actualizarDatos())
 
-    xNombre.value = '';
 }
 
 // borrar Item
-function borrarItem(userID: string) {
-    fb.remItem(userID).then(() => actualizarDatos())
+async function borrarItem(item: any, index: number) {
+    await fb.remItem(item.id).then(() => actualizarDatos())
 };
 
 // editar Item
-function editarItem(item: any) {
-    xNombre.value = item.data.nombre
+function editarItem(item: any, index: number) {
     userID.value = item.id;
     modeEdit.value = true;
 };
 
 // guardar Item
-function guardarItem() {
-    fb.updateItem(userID.value, {
-        nombre: xNombre.value
+async function guardarItem(data: string) {
+    await fb.updateItem(userID.value, {
+        nombre: data
     }).then(() => actualizarDatos())
 
     modeEdit.value = false;
     userID.value = null;
-    xNombre.value = '';
 };
 
 function cancerGuardar() {
     modeEdit.value = false;
-    xNombre.value = ""
 };
 
 </script>
 
 <template>
-    <div class="d-flex justify-content-center align-items-center vh-100">
-        <div>
-            <h1 class="text-center">Bienvenido a la página Firebase</h1>
-            <div class="card p-5">
-                <div class="mb-3">
-                    <label for="inputTexto" class="form-label">Ingrese un nombre</label>
-                    <input v-model="xNombre" type="text" class="form-control" id="inputTexto">
-                </div>
-                <button @click="modeEdit ? guardarItem() : agregarItem()" class="btn"
-                    :class="modeEdit ? 'btn-secondary' : 'btn-primary'">
-                    {{ modeEdit ? 'Guardar' : 'Enviar' }}
-                </button>
-                <button v-if="modeEdit" @click="cancerGuardar" class="btn btn-danger my-1">Cancelar</button>
-
-            </div>
-
-            <table class="table table-bordered my-3">
-                <thead>
-                    <tr>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Funciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(item, index) in xArr" :key="index">
-                        <td>{{ item.data.nombre }}</td>
-                        <td>
-                            <button :disabled="modeEdit" @click="editarItem(item)"
-                                class="btn btn-success me-2">E</button>
-                            <button :disabled="modeEdit" @click="borrarItem(item.id)" class="btn btn-danger">X</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <MainComp :title="title" @editarItem="editarItem" @agregar-item="agregarItem" @guardar-item="guardarItem"
+        :mode-edit="modeEdit" :x-arr="xArr" :borrar-item="borrarItem" :cancer-guardar="cancerGuardar" />
 </template>

@@ -1,7 +1,9 @@
 <script setup lang="ts">
+
 import { RouterLink, RouterView } from 'vue-router'
 
 let arrLista = [
+  "/array",
   "/objeto",
   "/localStorage",
   "/indexeddb",
